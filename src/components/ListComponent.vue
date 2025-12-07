@@ -69,7 +69,7 @@ export default {
         const weight = Number(item.weight) || 0;
         const height = Number(item.height) || 0;
         const age = Number(item.age) || 0;
-        let val = null;
+        let val: number | null = null;
         if (g === 'M') {
           val = (13.7 * weight) + (5 * height) - (6.8 * age) + 66;
         } else if (g === 'F') {
