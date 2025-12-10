@@ -2,12 +2,8 @@
   <div class="show-container">
     <div class="show-content" :class="{ 'visible': isVisible }">
       <!-- Back Button -->
-     
       <h1 class="show-title">Calculation Results</h1>
       <p class="show-description">นี่คือผลลัพธ์การคำนวณและเมนูอาหารที่แนะนำสำหรับคุณ</p>
-      
- 
-
       <!-- Food Suggestions -->
       <div v-if="Object.keys(recommendedMeals).length > 0" class="food-suggestions"> <!--ตรวจสอบว่ามีเมนูอาหารแนะนำอยู่หรือไม่ -->
         <p class="total-calories-info">
@@ -37,7 +33,6 @@
           Back to Form
         </button>
             </div>
-    
     </div>
     </div>
  
@@ -67,24 +62,19 @@ export default defineComponent({
       required: true,
     }
   },
+
+//รับค่า bmr และ tdee ผ่าน props จาก Component แม่คือ App.vue
+
+
+
+
+
   data() {
     return {
       animatedBmr: 0,
       animatedTdee: 0,
       isVisible: false,
-      // ========================================================================
-      // == คลังข้อมูลเมนูอาหารทั้งหมด (All Food Database) ==
-      // คุณสามารถเพิ่มเมนูอาหารใหม่ๆ ใน array นี้ได้เลย
-      // เพื่อเพิ่มความหลากหลายและความแม่นยำในการแนะนำอาหาร
-      //
-      // โครงสร้างของแต่ละเมนู:
-      // { 
-      //   name: 'ชื่อเมนูอาหาร', 
-      //   calories: จำนวนแคลอรี่ (ตัวเลข), 
-      //   image: 'URL ของรูปภาพ' 
-      //   category: 'main' | 'snack' | 'drink' (หมวดหมู่อาหาร)
-      // },
-      // ========================================================================
+      // คลังข้อมูลเมนูอาหารทั้งหมด (All Food Database) 
       allFoods: [
         { name: 'ข้าวมันไก่', calories: 700,  image: 'https://f.ptcdn.info/395/086/000/m4f7e1g0ie15RJ586YF-o.jpg', category: 'main' },
         { name: 'สลัดผัก', calories: 100, image: 'https://i.pinimg.com/736x/a3/41/d4/a341d44bf1bf710eda354fa2f7c1267c.jpg', category: 'snack' },
@@ -113,10 +103,7 @@ export default defineComponent({
         { name: 'น้ำเต้าหู้', calories: 80, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTfgaamlc-E5BsffSsfIeKr8kRO_TJdjlVyoQ&s', category: 'drink' },
         { name: 'น้ำส้มคั้น', calories: 110, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnHYW7iEUdsvEK6gnCHp-JEfZREaVwy0ub0Q&s', category: 'drink' },
         { name: 'ข้าวผัดปู', calories: 530, image: 'https://recipe.sgethai.com/wp-content/uploads/2025/05/140525-crab-fried-rice-cover.webp', category: 'main' },
-                                                                                                                                                                           
-        // <-- เพิ่มเมนูใหม่ต่อท้ายตรงนี้ได้เลยครับ เช่น:
-        // { name: 'ผัดไทยกุ้งสด', calories: 680, image: 'URL_รูปภาพผัดไทย.jpg', category: 'main' },
-        // { name: 'ข้าวขาหมู', calories: 700, image: 'URL_รูปภาพข้าวขาหมู.jpg', category: 'main' },
+                                                                                                                                                                
       ] as Food[] // กำหนดให้ allFoods เป็น Array ของ Food
     };
   },
@@ -202,7 +189,7 @@ export default defineComponent({
                         }
                     }
                 }
-                
+
                 if (bestMain) {
                     mealFoods.push(bestMain);
                     mealTotalCalories += bestMain.calories;
