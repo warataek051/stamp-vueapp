@@ -4,17 +4,7 @@
       <h1 class="show-title">Calculation Results</h1>
       <p class="show-description">นี่คือผลลัพธ์การคำนวณและเมนูอาหารที่แนะนำสำหรับคุณ</p>
       
-      <!-- BMR & TDEE Results -->
-      <div class="results-grid">
-        <div v-if="typeof tdee === 'number'" class="result-card main-result">
-          <!-- //เอาไว้ตรวจสอบว่า tdee เป็นตัวเลขจริงหรือยังถ้า tdee เป็นตัวเลข → จะแสดงการ์ดผลลัพธ์ (result card) -->
-
-          <h3>TDEE (Total Daily Energy Expenditure)</h3>
-          <p class="result-value">{{ animatedTdee.toFixed(0) }}</p>
-          <span>แคลอรี่/วัน</span>
-          <small>พลังงานที่ร่างกายต้องการใช้ในแต่ละวัน</small>
-        </div>
-      </div>
+ 
 
       <!-- Food Suggestions -->
       <div v-if="Object.keys(recommendedMeals).length > 0" class="food-suggestions"> <!--ตรวจสอบว่ามีเมนูอาหารแนะนำอยู่หรือไม่ -->
@@ -76,20 +66,24 @@ export default defineComponent({
       //   name: 'ชื่อเมนูอาหาร', 
       //   calories: จำนวนแคลอรี่ (ตัวเลข), 
       //   image: 'URL ของรูปภาพ' 
+      //   category: 'main' | 'snack' | 'drink' (หมวดหมู่อาหาร)
       // },
       // ========================================================================
       allFoods: [
-        { name: 'ข้าวมันไก่', calories: 600, image: 'https://f.ptcdn.info/395/086/000/m4f7e1g0ie15RJ586YF-o.jpg' },
-        { name: 'สลัดผัก', calories: 250, image: 'https://i.pinimg.com/736x/a3/41/d4/a341d44bf1bf710eda354fa2f7c1267c.jpg' },
-        { name: 'กะเพราไก่ไข่ดาว', calories: 550, image: 'https://www.ajinomoto.co.th/storage/photos/shares/our-story/blog/krapao-story/krapao-02.jpg' },
-        { name: 'สเต็กปลาแซลมอน', calories: 450, image: 'https://krua.co/wp-content/uploads/2022/02/KS_0010-scaled.jpg' },
-        { name: 'ต้มยำกุ้ง', calories: 350, image: 'https://s359.kapook.com/pagebuilder/e8336043-a086-4923-8869-5f74523a59fb.jpg' },
-        { name: 'แกงเขียวหวานไก่', calories: 480, image: 'https://d12man5gwydfvl.cloudfront.net/wp-content/uploads/2020/02/Green-curry-recipe-1-1.jpg' },
-        { name: 'ข้าวไข่เจียว', calories: 300, image: 'https://s359.kapook.com/pagebuilder/372c8d79-913c-4161-8f3a-93a44e5b1b95.jpg' },
-        { name: 'โยเกิร์ตผลไม้', calories: 150, image: 'https://i.ytimg.com/vi/YfP33u5T__4/maxresdefault.jpg' },
+        { name: 'ข้าวมันไก่', calories: 600, image: 'https://f.ptcdn.info/395/086/000/m4f7e1g0ie15RJ586YF-o.jpg', category: 'main' },
+        { name: 'สลัดผัก', calories: 250, image: 'https://i.pinimg.com/736x/a3/41/d4/a341d44bf1bf710eda354fa2f7c1267c.jpg', category: 'snack' },
+        { name: 'กะเพราไก่ไข่ดาว', calories: 550, image: 'https://us-fbcloud.net/hottopic/data/1107/1107933.x7c0cp1p16pi.n3.webp', category: 'main' },
+        { name: 'สเต็กปลาแซลมอน', calories: 450, image: 'https://fit-d.com/image_webp/f?src=./uploads/food/649f7d8be26053a1f6132fdd3cb67ffe.jpeg', category: 'main' },
+        { name: 'ต้มยำกุ้ง', calories: 350, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQoMt-i0iEpQTjuBCwcVXa-vS250HmfjXwksQ&s', category: 'main' },
+        { name: 'แกงเขียวหวานไก่', calories: 480, image: 'https://recipe.sgethai.com/wp-content/uploads/2019/03/26022025-chicken-green-curry-2.webp', category: 'main' },
+        { name: 'ข้าวไข่เจียว', calories: 300, image: 'https://img.kapook.com/u/2016/wanwanat/0_edit/385698979x.jpg', category: 'main' },
+        { name: 'โยเกิร์ตผลไม้', calories: 150, image: 'https://cheewajit.com/app/uploads/2017/01/%E0%B9%82%E0%B8%A2%E0%B9%80%E0%B8%81%E0%B8%B4%E0%B8%A3%E0%B9%8C%E0%B8%95%E0%B8%9C%E0%B8%A5%E0%B9%84%E0%B8%A1%E0%B9%89%E0%B8%AB%E0%B8%A5%E0%B8%B2%E0%B8%81%E0%B8%AA%E0%B8%B5-02.jpg', category: 'snack' },
+        { name: 'กล้วยหอม', calories: 120, image: 'https://i0.wp.com/post.healthline.com/wp-content/uploads/2021/03/banana-1296x728-header.jpg?w=1155&h=1528', category: 'snack' },
+        { name: 'อเมริกาโน่ (ไม่หวาน)', calories: 15, image: 'https://www.nespresso.com/ncp/res/uploads/recipes/nespresso-recipes-Americano.jpg', category: 'drink' },
+        { name: 'นมจืด', calories: 150, image: 'https://inwfile.com/s-o/yqg2wu.jpg', category: 'drink' },
         // <-- เพิ่มเมนูใหม่ต่อท้ายตรงนี้ได้เลยครับ เช่น:
-        // { name: 'ผัดไทยกุ้งสด', calories: 680, image: 'URL_รูปภาพผัดไทย.jpg' },
-        // { name: 'ข้าวขาหมู', calories: 700, image: 'URL_รูปภาพข้าวขาหมู.jpg' },
+        // { name: 'ผัดไทยกุ้งสด', calories: 680, image: 'URL_รูปภาพผัดไทย.jpg', category: 'main' },
+        // { name: 'ข้าวขาหมู', calories: 700, image: 'URL_รูปภาพข้าวขาหมู.jpg', category: 'main' },
       ]
     };
   },
@@ -127,7 +121,7 @@ export default defineComponent({
     }
   },
   computed: {
-    recommendedMeals(): Record<string, { foods: { name: string; calories: number; image: string }[], totalCalories: number }> {
+    recommendedMeals(): Record<string, { foods: { name: string; calories: number; image: string; category: string }[], totalCalories: number }> {
       const tdee = this.tdee;
       if (!tdee || tdee <= 0 || this.allFoods.length === 0) return {}; //หยุดการสร้างเมนูอาหาร ถ้าเงื่อนไขไม่พร้อมไม่มี TDEEหรือ ค่า TDEE ผิดหรือ ไม่มีรายการอาหารให้เลือก
 
@@ -139,34 +133,56 @@ export default defineComponent({
 
       // กำหนดสัดส่วนแคลอรี่สำหรับแต่ละมื้อ ปริมาณอาหาร 
       const mealTargets = {
-        Breakfast: tdee * 0.30, // 30%
-        Lunch:     tdee * 0.40, // 40%
-        Dinner:    tdee * 0.30, // 30%
+        Breakfast: { target: tdee * 0.30, categories: ['main', 'snack', 'drink'] }, // 30%
+        Lunch:     { target: tdee * 0.40, categories: ['main', 'drink'] }, // 40%
+        Dinner:    { target: tdee * 0.30, categories: ['main', 'snack'] }, // 30%
       };
 
       let availableFoods = [...this.allFoods];
       const meals: Record<string, { foods: any[], totalCalories: number }> = {};
 
-      // ฟังก์ชันสำหรับหาอาหารที่แคลอรี่ใกล้เคียงเป้าหมายที่สุด
-      const findBestFood = (target: number, foodPool: any[]) => {
-        if (foodPool.length === 0) return null;
-        // เรียงลำดับอาหารตามความต่างของแคลอรี่กับเป้าหมาย (น้อยที่สุดไปมากที่สุด)
-        const sorted = [...foodPool].sort((a, b) => Math.abs(a.calories - target) - Math.abs(b.calories - target));
-        return sorted[0];
-      };
-
       for (const mealName in mealTargets) {
-        const target = mealTargets[mealName as keyof typeof mealTargets];
-        const bestFood = findBestFood(target, availableFoods);
+        const mealInfo = mealTargets[mealName as keyof typeof mealTargets];
+        let remainingCalories = mealInfo.target;
+        const mealFoods: any[] = [];
+        let mealTotalCalories = 0;
 
-        if (bestFood) {
-          meals[mealName] = {
-            foods: [bestFood],
-            totalCalories: bestFood.calories
-          };
-          // นำอาหารที่เลือกแล้วออกจาก pool เพื่อไม่ให้เลือกซ้ำ
-          availableFoods = availableFoods.filter(food => food.name !== bestFood.name);
+        // สร้าง pool อาหารสำหรับมื้อนี้ตาม category ที่กำหนด
+        let foodPoolForMeal = availableFoods.filter(food => mealInfo.categories.includes(food.category));
+
+        // จัดลำดับความสำคัญ: อาหารหลัก (main) > ของว่าง (snack) > เครื่องดื่ม (drink)
+        foodPoolForMeal.sort((a, b) => {
+            const categoryOrder = { 'main': 1, 'snack': 2, 'drink': 3 };
+            return categoryOrder[a.category as keyof typeof categoryOrder] - categoryOrder[b.category as keyof typeof categoryOrder];
+        });
+
+        while (remainingCalories > 100 && foodPoolForMeal.length > 0) { // พยายามเติมจนกว่าแคลจะเหลือน้อยกว่า 100 หรือไม่มีอาหารให้เลือก
+            // หาอาหารที่แคลอรี่ใกล้เคียงกับที่เหลืออยู่ที่สุด แต่ไม่เกิน
+            let bestFood = null;
+            let smallestDiff = Infinity;
+
+            for (const food of foodPoolForMeal) {
+                if (food.calories <= remainingCalories) {
+                    const diff = remainingCalories - food.calories;
+                    if (diff < smallestDiff) {
+                        smallestDiff = diff;
+                        bestFood = food;
+                    }
+                }
+            }
+
+            if (bestFood) {
+                mealFoods.push(bestFood);
+                mealTotalCalories += bestFood.calories;
+                remainingCalories -= bestFood.calories;
+                // นำอาหารที่เลือกแล้วออกจาก pool ทั้งหมด
+                availableFoods = availableFoods.filter(f => f.name !== bestFood.name);
+                foodPoolForMeal = foodPoolForMeal.filter(f => f.name !== bestFood.name);
+            } else {
+                break; // ไม่มีอาหารที่เหมาะสมแล้ว
+            }
         }
+        meals[mealName] = { foods: mealFoods, totalCalories: mealTotalCalories };
       }
 
       return meals;
