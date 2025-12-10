@@ -8,7 +8,11 @@
       <ListComponent :employees="employee"/>
     </div>
     <div v-if="showResults">
-      <Show @back="showResults = false" :employeeData="lastEmployee" />
+      <Show 
+        @back="showResults = false" 
+        :bmr="lastEmployee.bmr" 
+        :tdee="lastEmployee.tdee" 
+      />
     </div>
   </div>
 </template>
@@ -41,4 +45,3 @@ export default {
     }
 };
 </script>
-

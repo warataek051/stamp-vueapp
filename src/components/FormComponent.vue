@@ -84,6 +84,22 @@ export default {
             }
             return null;
         },
+        // computed TDEE value (kcal/day) or null when not enough data
+        tdee() {
+            if (this.bmr === null) return null;
+            const activity = this.employee.activity;
+            const activityMultipliers = {
+                "Sedentary (0 day/week)": 1.2,
+                "Light Exercise (1-2 day /week)": 1.375,
+                "Moderate Exercise (3-5 day /week)": 1.55,
+                "Heavy Exercise (6-7 day /week)": 1.725,
+                "Athlete (2x per day)": 1.9
+            };
+            const multiplier = activityMultipliers[activity];
+            if (!multiplier) return null;
+
+            return this.bmr * multiplier;
+        },
         bmrDisplay() {
             const v = this.bmr;
             return (v === null) ? '-' : Math.round(v) + ' kcal/day';
@@ -104,14 +120,16 @@ export default {
         supmitFrm() {
             if (this.isSubmitted) return;
             
-            const newEmployee = { ...this.employee };
-            // attach computed BMR (rounded) before emitting
-            newEmployee.bmr = (this.bmr === null) ? null : Math.round(this.bmr);
-            this.$emit('save', newEmployee);
+            const results = { 
+                ...this.employee,
+                bmr: this.bmr ? Math.round(this.bmr) : null,
+                tdee: this.tdee ? Math.round(this.tdee) : null
+            };
+            this.$emit('save', results);
             this.isSubmitted = true;
         },
         goToShow() {
-            this.$emit('show-results');
+            this.$emit('show-results', { bmr: this.bmr, tdee: this.tdee });
         }
     }
 }
@@ -292,4 +310,3 @@ export default {
     margin: 0;
 }
 </style>
-
