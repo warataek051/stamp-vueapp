@@ -63,12 +63,7 @@ export default defineComponent({
     }
   },
 
-//รับค่า bmr และ tdee ผ่าน props จาก Component แม่คือ App.vue
-
-
-
-
-
+//รับค่า bmr และ tdee ผ่าน props จาก Component แม่คือ App.vue 
   data() {
     return {
       animatedBmr: 0,
