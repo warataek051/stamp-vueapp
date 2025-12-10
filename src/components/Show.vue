@@ -1,6 +1,8 @@
 <template>
   <div class="show-container">
     <div class="show-content" :class="{ 'visible': isVisible }">
+      <!-- Back Button -->
+     
       <h1 class="show-title">Calculation Results</h1>
       <p class="show-description">นี่คือผลลัพธ์การคำนวณและเมนูอาหารที่แนะนำสำหรับคุณ</p>
       
@@ -27,17 +29,31 @@
           </div>
         </div>
       </div>
-
-      <div class="actions">
-        <button class="btn back" @click="$emit('back')">Back to Form</button>
-      </div>
+      <div class="actions-top">
+ <button class="btn back" @click="$emit('back')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+          </svg>
+          Back to Form
+        </button>
+            </div>
+    
     </div>
-  </div>
+    </div>
+ 
 </template>
 
 
 <script lang="ts">
-import { defineComponent, nextTick } from 'vue';
+import { defineComponent, nextTick, PropType } from 'vue';
+
+// สร้าง Interface เพื่อกำหนด Type ของข้อมูลอาหารให้ชัดเจน
+interface Food {
+  name: string;
+  calories: number;
+  image: string;
+  category: 'main' | 'snack' | 'drink';
+}
 
 export default defineComponent({
   name: 'ShowComponent',
@@ -84,7 +100,7 @@ export default defineComponent({
         // <-- เพิ่มเมนูใหม่ต่อท้ายตรงนี้ได้เลยครับ เช่น:
         // { name: 'ผัดไทยกุ้งสด', calories: 680, image: 'URL_รูปภาพผัดไทย.jpg', category: 'main' },
         // { name: 'ข้าวขาหมู', calories: 700, image: 'URL_รูปภาพข้าวขาหมู.jpg', category: 'main' },
-      ]
+      ] as Food[] // กำหนดให้ allFoods เป็น Array ของ Food
     };
   },
   mounted() {
@@ -121,16 +137,10 @@ export default defineComponent({
     }
   },
   computed: {
-    recommendedMeals(): Record<string, { foods: { name: string; calories: number; image: string; category: string }[], totalCalories: number }> {
+    recommendedMeals(): Record<string, { foods: Food[], totalCalories: number }> {
       const tdee = this.tdee;
       if (!tdee || tdee <= 0 || this.allFoods.length === 0) return {}; //หยุดการสร้างเมนูอาหาร ถ้าเงื่อนไขไม่พร้อมไม่มี TDEEหรือ ค่า TDEE ผิดหรือ ไม่มีรายการอาหารให้เลือก
-
-
-
-
-
-
-
+      
       // กำหนดสัดส่วนแคลอรี่สำหรับแต่ละมื้อ ปริมาณอาหาร 
       const mealTargets = {
         Breakfast: { target: tdee * 0.30, categories: ['main', 'snack', 'drink'] }, // 30%
@@ -139,10 +149,10 @@ export default defineComponent({
       };
 
       let availableFoods = [...this.allFoods];
-      const meals: Record<string, { foods: any[], totalCalories: number }> = {};
+      const meals: Record<string, { foods: Food[], totalCalories: number }> = {};
 
       for (const mealName in mealTargets) {
-        const mealInfo = mealTargets[mealName as keyof typeof mealTargets];
+        const mealInfo = mealTargets[mealName as keyof typeof mealTargets]; // Cast to keyof
         let remainingCalories = mealInfo.target;
         const mealFoods: any[] = [];
         let mealTotalCalories = 0;
@@ -153,12 +163,12 @@ export default defineComponent({
         // จัดลำดับความสำคัญ: อาหารหลัก (main) > ของว่าง (snack) > เครื่องดื่ม (drink)
         foodPoolForMeal.sort((a, b) => {
             const categoryOrder = { 'main': 1, 'snack': 2, 'drink': 3 };
-            return categoryOrder[a.category as keyof typeof categoryOrder] - categoryOrder[b.category as keyof typeof categoryOrder];
+            return categoryOrder[a.category] - categoryOrder[b.category];
         });
 
         while (remainingCalories > 100 && foodPoolForMeal.length > 0) { // พยายามเติมจนกว่าแคลจะเหลือน้อยกว่า 100 หรือไม่มีอาหารให้เลือก
             // หาอาหารที่แคลอรี่ใกล้เคียงกับที่เหลืออยู่ที่สุด แต่ไม่เกิน
-            let bestFood = null;
+            let bestFood: Food | null = null; // << FIX: กำหนด Type ให้ชัดเจน
             let smallestDiff = Infinity;
 
             for (const food of foodPoolForMeal) {
@@ -171,13 +181,14 @@ export default defineComponent({
                 }
             }
 
-            if (bestFood) {
-                mealFoods.push(bestFood);
-                mealTotalCalories += bestFood.calories;
-                remainingCalories -= bestFood.calories;
+            if (bestFood) { // Type Guard: ใน block นี้ TypeScript จะรู้ว่า bestFood ไม่ใช่ null
+                const foodToRemove = bestFood; // << FIX: สร้างตัวแปรใหม่เพื่อช่วย TypeScript
+                mealFoods.push(foodToRemove);
+                mealTotalCalories += foodToRemove.calories;
+                remainingCalories -= foodToRemove.calories;
                 // นำอาหารที่เลือกแล้วออกจาก pool ทั้งหมด
-                availableFoods = availableFoods.filter(f => f.name !== bestFood.name);
-                foodPoolForMeal = foodPoolForMeal.filter(f => f.name !== bestFood.name);
+                availableFoods = availableFoods.filter(f => f.name !== foodToRemove.name);
+                foodPoolForMeal = foodPoolForMeal.filter(f => f.name !== foodToRemove.name);
             } else {
                 break; // ไม่มีอาหารที่เหมาะสมแล้ว
             }
@@ -394,13 +405,17 @@ export default defineComponent({
 }
 
 
-.actions {
+.actions-top {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start; /* align to left */
+  margin-bottom: 20px;
 }
 
 .btn.back {
-  padding: 14px 32px;
+  display: inline-flex; /* to align icon and text */
+  align-items: center;
+  gap: 8px; /* space between icon and text */
+  padding: 12px 24px;
   background-color: #2c3e50;
   color: #ffffff;
   border: none;
