@@ -146,7 +146,7 @@ export default defineComponent({
       const mealTargets = {
         Breakfast: { target: tdee * 0.30, categories: ['main' ] }, // 30%
         Lunch:     { target: tdee * 0.40, categories: ['main', 'drink'] }, // 40%
-        Dinner:    { target: tdee * 0.30, categories: ['snack'] }, // 30% - อัปเดตตามที่ร้องขอ
+        Dinner:    { target: tdee * 0.30, categories: ['snack'] }, // 30% - 
       };
 
       let availableFoods = [...this.allFoods];
