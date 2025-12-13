@@ -5,15 +5,7 @@
       <h1 class="show-title">Calculation Results</h1>
       <p class="show-description">นี่คือผลลัพธ์การคำนวณและเมนูอาหารที่แนะนำสำหรับคุณ</p>
 
-      <div v-if="Object.keys(recommendedMeals).length > 0" class="food-suggestions">
-        
-        <p class="total-calories-info">
-          แคลอรี่รวม 3 มื้อ: <strong>{{ totalRecommendedCalories.toFixed(0) }} kcal</strong>
-        </p>
-
-        <MealList :meals="recommendedMeals" />
-
-      </div>
+      <MealList :tdee="tdee" />
 
       <div class="actions-top">
         <button class="btn back" @click="handleBack">Back to Form</button>
@@ -24,14 +16,12 @@
 
 <script lang="ts">
 import { defineComponent, nextTick } from 'vue';
-import { allFoods, Food } from './mockdata.vue';
-// Import Component ใหม่เข้ามา
 import MealList from './MealList.vue';
 
 export default defineComponent({
   name: 'ShowComponent',
   components: {
-    MealList // ลงทะเบียน Component
+    MealList
   },
   props: {
     bmr: { type: Number, required: true },
@@ -42,7 +32,6 @@ export default defineComponent({
       animatedBmr: 0,
       animatedTdee: 0,
       isVisible: false,
-      allFoods: allFoods as Food[] 
     };
   },
   mounted() {
@@ -57,12 +46,10 @@ export default defineComponent({
       setTimeout(() => this.$emit('back'), 500);
     },
     animateNumbers() {
-      // (คงเดิมไว้) ...
       this.tween(this, 'animatedBmr', this.bmr, 1000);
       this.tween(this, 'animatedTdee', this.tdee, 1200);
     },
     tween(target: any, key: string, endValue: number, duration: number) {
-      // (คงเดิมไว้) ...
        const startValue = target[key];
        const startTime = performance.now();
        const animate = (currentTime: number) => {
@@ -78,88 +65,12 @@ export default defineComponent({
        requestAnimationFrame(animate);
     }
   },
-  computed: {
-    // *** Logic การคำนวณอาหาร (recommendedMeals) เก็บไว้ที่ Parent เหมือนเดิมถูกต้องแล้ว ***
-    // เพราะต้องใช้ค่า tdee ในการคำนวณ แล้วค่อยส่งผลลัพธ์ไปให้ลูกแสดงผล
-    recommendedMeals(): Record<string, { foods: Food[], totalCalories: number }> {
-      const tdee = this.tdee;
-      if (!tdee || tdee <= 0 || this.allFoods.length === 0) return {};
-
-      const mealTargets = {
-        Breakfast: { target: tdee * 0.30, categories: ['main' ] }, 
-        Lunch:     { target: tdee * 0.40, categories: ['main', 'drink'] }, 
-        Dinner:    { target: tdee * 0.30, categories: ['snack'] }, 
-      };
-
-      let availableFoods = [...this.allFoods];
-      const meals: Record<string, { foods: Food[], totalCalories: number }> = {};
-
-      for (const mealName in mealTargets) {
-        const mealInfo = mealTargets[mealName as keyof typeof mealTargets];
-        let remainingCalories = mealInfo.target;
-        const mealFoods: Food[] = [];
-        let mealTotalCalories = 0;
-
-        let foodPoolForMeal = availableFoods.filter(food => mealInfo.categories.includes(food.category));
-
-        if (mealInfo.categories.includes('main')) {
-            const mainFoods = foodPoolForMeal.filter(f => f.category === 'main');
-            if (mainFoods.length > 0) {
-                let bestMain: Food | null = null;
-                let smallestDiff = Infinity;
-                for (const food of mainFoods) {
-                    if (food.calories <= remainingCalories) {
-                        const diff = remainingCalories - food.calories;
-                        if (diff < smallestDiff) {
-                            smallestDiff = diff;
-                            bestMain = food;
-                        }
-                    }
-                }
-
-                if (bestMain) {
-                    mealFoods.push(bestMain);
-                    mealTotalCalories += bestMain.calories;
-                    remainingCalories -= bestMain.calories;
-                    availableFoods = availableFoods.filter(f => f.name !== bestMain!.name);
-                    foodPoolForMeal = foodPoolForMeal.filter(f => f.name !== bestMain!.name);
-                }
-            }
-        }
-
-        while (remainingCalories > 50 && foodPoolForMeal.length > 0) {
-            const fittingFoods = foodPoolForMeal.filter(f => f.calories <= remainingCalories && f.category !== 'main');
-            if (fittingFoods.length === 0) break;
-            const randomFood = fittingFoods[Math.floor(Math.random() * fittingFoods.length)];
-            if (randomFood) {
-                mealFoods.push(randomFood);
-                mealTotalCalories += randomFood.calories;
-                remainingCalories -= randomFood.calories;
-                if (randomFood.category !== 'snack') {
-                    availableFoods = availableFoods.filter(f => f.name !== randomFood!.name);
-                }
-                foodPoolForMeal = foodPoolForMeal.filter(f => f.name !== randomFood!.name);
-            } else {
-                break; 
-            }
-        }
-        meals[mealName] = { foods: mealFoods, totalCalories: mealTotalCalories };
-      }
-
-      return meals;
-    },
-    totalRecommendedCalories(): number {
-      if (!this.recommendedMeals || Object.keys(this.recommendedMeals).length === 0) {
-        return 0;
-      }
-      return Object.values(this.recommendedMeals).reduce((sum, meal) => sum + meal.totalCalories, 0);
-    }
-  }
+  // ไม่ต้องมี computed: recommendedMeals แล้ว เพราะย้ายไป MealList หมดแล้ว
 });
 </script>
 
 <style scoped>
-/* เหลือไว้เฉพาะ CSS ของ Layout หลัก */
+/* เหลือไว้แค่ CSS โครงสร้างหลักของหน้า */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .show-container {
@@ -197,21 +108,11 @@ export default defineComponent({
   margin-bottom: 40px;
 }
 
-.food-suggestions {
-  margin-top: 20px;
-}
-
-.total-calories-info {
-  text-align: center;
-  margin-top: -15px;
-  margin-bottom: 25px;
-  color: #555;
-}
-
 .actions-top {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  margin-top: 30px;
 }
 
 .btn.back {
