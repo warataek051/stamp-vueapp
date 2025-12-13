@@ -1,23 +1,18 @@
 <template>
   <div class="show-container">
     <div class="show-content" :class="{ 'visible': isVisible }">
-      
       <h1 class="show-title">Calculation Results</h1>
       <p class="show-description">นี่คือผลลัพธ์การคำนวณและเมนูอาหารที่แนะนำสำหรับคุณ</p>
-
       <MealList :tdee="tdee" />
-
       <div class="actions-top">
         <button class="btn back" @click="handleBack">Back to Form</button>
       </div>
     </div>
   </div>
 </template>
-
 <script lang="ts">
 import { defineComponent, nextTick } from 'vue';
 import MealList from './MealList.vue';
-
 export default defineComponent({
   name: 'ShowComponent',
   components: {
@@ -65,12 +60,10 @@ export default defineComponent({
        requestAnimationFrame(animate);
     }
   },
-  // ไม่ต้องมี computed: recommendedMeals แล้ว เพราะย้ายไป MealList หมดแล้ว
 });
 </script>
 
 <style scoped>
-/* เหลือไว้แค่ CSS โครงสร้างหลักของหน้า */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 .show-container {

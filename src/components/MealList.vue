@@ -1,11 +1,9 @@
 <template>
   <div class="meal-list-container">
-    
     <div v-if="totalRecommendedCalories > 0">
       <p class="total-calories-info">
         แคลอรี่รวม 3 มื้อ: <strong>{{ totalRecommendedCalories.toFixed(0) }} kcal</strong>
       </p>
-
       <div v-for="(meal, mealName) in recommendedMeals" :key="mealName" class="meal-section">
         <div class="meal-header">
           <h3 class="meal-title">{{ mealName }}</h3>
@@ -16,8 +14,7 @@
             v-for="(food, index) in meal.foods" 
             :key="food.name" 
             class="food-card" 
-            :style="{ 'transition-delay': `${index * 100}ms` }"
-          >
+            :style="{ 'transition-delay': `${index * 100}ms` }">
             <img :src="food.image" :alt="food.name" class="food-image">
             <div class="food-info">
               <h4 class="food-name">{{ food.name }}</h4>
@@ -27,18 +24,15 @@
         </div>
       </div>
     </div>
-
     <div v-else class="no-data">
       <p>ไม่สามารถคำนวณรายการอาหารได้ (TDEE ต่ำเกินไป หรือ ไม่มีข้อมูลอาหาร)</p>
     </div>
-
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 
-// 1. ประกาศ Interface และ Data ไว้ในนี้เลย
 interface Food {
   name: string;
   calories: number;
@@ -94,28 +88,22 @@ export default defineComponent({
     }
   },
   computed: {
-    // ย้าย Logic การคำนวณมาไว้ที่นี่
     recommendedMeals(): Record<string, { foods: Food[], totalCalories: number }> {
       const tdee = this.tdee;
       if (!tdee || tdee <= 0 || this.allFoodsList.length === 0) return {};
-
       const mealTargets = {
         Breakfast: { target: tdee * 0.30, categories: ['main' ] }, 
         Lunch:     { target: tdee * 0.40, categories: ['main', 'drink'] }, 
         Dinner:    { target: tdee * 0.30, categories: ['snack'] }, 
       };
-
       let availableFoods = [...this.allFoodsList];
       const meals: Record<string, { foods: Food[], totalCalories: number }> = {};
-
       for (const mealName in mealTargets) {
         const mealInfo = mealTargets[mealName as keyof typeof mealTargets];
         let remainingCalories = mealInfo.target;
         const mealFoods: Food[] = [];
         let mealTotalCalories = 0;
-
         let foodPoolForMeal = availableFoods.filter(food => mealInfo.categories.includes(food.category));
-
         if (mealInfo.categories.includes('main')) {
             const mainFoods = foodPoolForMeal.filter(f => f.category === 'main');
             if (mainFoods.length > 0) {
@@ -130,7 +118,6 @@ export default defineComponent({
                         }
                     }
                 }
-
                 if (bestMain) {
                     mealFoods.push(bestMain);
                     mealTotalCalories += bestMain.calories;
@@ -140,7 +127,6 @@ export default defineComponent({
                 }
             }
         }
-
         while (remainingCalories > 50 && foodPoolForMeal.length > 0) {
             const fittingFoods = foodPoolForMeal.filter(f => f.calories <= remainingCalories && f.category !== 'main');
             if (fittingFoods.length === 0) break;
@@ -159,7 +145,6 @@ export default defineComponent({
         }
         meals[mealName] = { foods: mealFoods, totalCalories: mealTotalCalories };
       }
-
       return meals;
     },
     totalRecommendedCalories(): number {
