@@ -16,7 +16,6 @@
     </div>
   </div>
 </template>
-
 <script >
 import FormComponent from './components/FormComponent.vue';
 import ListComponent from './components/ListComponent.vue';

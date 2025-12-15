@@ -16,12 +16,10 @@ import MealList from './MealList.vue';
 export default defineComponent({
   name: 'ShowComponent',
   components: {
-    MealList
-  },
+    MealList },
   props: {
     bmr: { type: Number, required: true },
-    tdee: { type: Number, required: true }
-  },
+    tdee: { type: Number, required: true }},
   data() {
     return {
       animatedBmr: 0,
@@ -65,14 +63,12 @@ export default defineComponent({
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 .show-container {
   max-width: 800px;
   margin: 40px auto;
   padding: 20px;
   font-family: 'Inter', sans-serif;
 }
-
 .show-content {
   background-color: #ffffff;
   border-radius: 16px;
@@ -86,7 +82,6 @@ export default defineComponent({
   opacity: 1;
   transform: translateY(0);
 }
-
 .show-title {
   font-size: 2rem;
   font-weight: bold;
@@ -94,20 +89,17 @@ export default defineComponent({
   margin-bottom: 10px;
   text-align: center;
 }
-
 .show-description {
   text-align: center;
   color: #666;
   margin-bottom: 40px;
 }
-
 .actions-top {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
   margin-top: 30px;
 }
-
 .btn.back {
   display: inline-flex;
   align-items: center;
@@ -122,11 +114,9 @@ export default defineComponent({
   cursor: pointer;
   transition: background-color 0.2s, transform 0.1s;
 }
-
 .btn.back:hover {
   background-color: #34495e;
 }
-
 .btn.back:active {
   transform: scale(0.98);
 }

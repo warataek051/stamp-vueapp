@@ -166,11 +166,9 @@ export default defineComponent({
   color: #555;
   font-size: 1.1rem;
 }
-
 .meal-section {
   margin-bottom: 40px;
 }
-
 .meal-header {
   display: flex;
   justify-content: space-between;
@@ -179,25 +177,21 @@ export default defineComponent({
   padding-bottom: 10px;
   margin-bottom: 20px;
 }
-
 .meal-title {
   font-size: 1.5rem;
   font-weight: bold;
   color: #333;
 }
-
 .meal-calories {
   font-size: 0.9rem;
   color: #555;
 }
-
 .food-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 28px;
   padding: 10px 0;
 }
-
 .food-card {
   background-color: #ffffff;
   border-radius: 14px;
@@ -206,52 +200,44 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  
   opacity: 0;
   transform: translateY(15px);
   animation: slideIn 0.5s ease-out forwards;
 }
-
 @keyframes slideIn {
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
-
 .food-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 30px rgba(0,0,0,0.12);
 }
-
 .food-image {
   width: 100%;
   height: 160px;
   object-fit: cover;
   border-bottom: 1px solid #f0f0f0;
 }
-
 .food-info {
   padding: 18px 16px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
-
 .food-name {
   font-size: 1.05rem;
   font-weight: 600;
   color: #333;
   margin: 0;
 }
-
 .food-calories {
   font-size: 0.9rem;
   color: #10b981;
   font-weight: 500;
   margin-top: 2px;
 }
-
 .no-data {
     text-align: center;
     color: #999;
